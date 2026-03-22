@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import useAccentColor from '../../hooks/useAccentColor';
-
+ 
 const Hero = () => {
-  useAccentColor(); // Mounted once here — drives global --color-accent
+  useAccentColor();
   const [dotOpacity, setDotOpacity] = useState(1);
-
+ 
   useEffect(() => {
     const mainEl = document.querySelector('main');
     if (!mainEl) return;
@@ -14,7 +14,7 @@ const Hero = () => {
     mainEl.addEventListener('scroll', handleScroll);
     return () => mainEl.removeEventListener('scroll', handleScroll);
   }, []);
-
+ 
   return (
     <section style={{
       height: '100vh',
@@ -24,8 +24,11 @@ const Hero = () => {
       justifyContent: 'center',
       position: 'relative',
       background: 'transparent',
-      padding: '0 1.5rem',
+      padding: '0 1rem',
       textAlign: 'center',
+      boxSizing: 'border-box',
+      overflow: 'hidden',
+      width: '100%',
     }}>
       <style>{`
         @keyframes hero-bounce {
@@ -37,56 +40,58 @@ const Hero = () => {
           50% { box-shadow: 0 0 24px var(--color-accent), 0 0 48px var(--color-accent); }
         }
       `}</style>
-
-      {/* Tag pill */}
+ 
       <div style={{
-        display: 'inline-block',
-        padding: '0.3rem 1.2rem',
+        display: 'inline-flex',
+        justifyContent: 'center',
+        padding: '0.3rem 1rem',
         borderRadius: '999px',
         border: '1px solid var(--color-accent)',
         color: 'var(--color-accent)',
         fontFamily: 'var(--font-mono)',
-        fontSize: '0.75rem',
-        letterSpacing: '0.2em',
+        fontSize: 'clamp(0.55rem, 1.8vw, 0.75rem)',
+        letterSpacing: '0.15em',
         textTransform: 'uppercase',
-        marginBottom: '2rem',
+        marginBottom: '1.5rem',
         transition: 'border-color 0.3s, color 0.3s',
+        whiteSpace: 'nowrap',
+        maxWidth: '90vw',
       }}>
-        Computer Science · Web Dev · AI
+        CS · Web Dev · AI
       </div>
-
-      {/* Name */}
+ 
       <h1 style={{
         fontFamily: 'var(--font-display)',
-        fontSize: 'clamp(2.5rem, 8vw, 8rem)',
+        fontSize: 'clamp(2.2rem, 9vw, 8rem)',
         fontWeight: 800,
         color: 'white',
         lineHeight: 1.05,
         textAlign: 'center',
-        maxWidth: '90vw',
-        wordBreak: 'break-word',
+        width: '100%',
+        maxWidth: '95vw',
+        overflowWrap: 'break-word',
+        margin: '0 auto',
       }}>
         Muhammad{' '}
         <span style={{ color: 'var(--color-accent)', transition: 'color 0.2s linear' }}>
           Hassaan
         </span>
       </h1>
-
-      {/* Subtitle */}
+ 
       <p style={{
         fontFamily: 'var(--font-mono)',
-        fontSize: 'clamp(0.9rem, 2vw, 1.2rem)',
+        fontSize: 'clamp(0.75rem, 2.5vw, 1.1rem)',
         color: '#888',
-        marginTop: '1.5rem',
-        letterSpacing: '0.05em',
+        marginTop: '1.2rem',
+        letterSpacing: '0.03em',
+        maxWidth: '90vw',
       }}>
         I build things that think.
       </p>
-
-      {/* Scroll indicator */}
+ 
       <div style={{
         position: 'absolute',
-        bottom: '2.5rem',
+        bottom: '2rem',
         left: '50%',
         transform: 'translateX(-50%)',
         opacity: dotOpacity,
@@ -94,18 +99,18 @@ const Hero = () => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        gap: '0.5rem',
+        gap: '0.4rem',
       }}>
         <span style={{
           fontFamily: 'var(--font-mono)',
-          fontSize: '0.65rem',
+          fontSize: '0.6rem',
           color: '#555',
           letterSpacing: '0.3em',
           textTransform: 'uppercase',
         }}>scroll</span>
         <div style={{
-          width: '8px',
-          height: '8px',
+          width: '7px',
+          height: '7px',
           borderRadius: '50%',
           background: 'var(--color-accent)',
           animation: 'hero-bounce 1.8s ease-in-out infinite, dot-glow 1.8s ease-in-out infinite',
@@ -115,5 +120,5 @@ const Hero = () => {
     </section>
   );
 };
-
+ 
 export default Hero;
