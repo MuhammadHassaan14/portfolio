@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import useAccentColor from '../../hooks/useAccentColor';
 
 const Hero = () => {
+  useAccentColor(); // Mounted once here — drives global --color-accent
   const [dotOpacity, setDotOpacity] = useState(1);
 
   useEffect(() => {
     const mainEl = document.querySelector('main');
     if (!mainEl) return;
     const handleScroll = () => {
-      const scrolled = mainEl.scrollTop;
-      // Fade out dot between 0 and 200px scroll
-      const opacity = Math.max(0, 1 - scrolled / 200);
-      setDotOpacity(opacity);
+      setDotOpacity(Math.max(0, 1 - mainEl.scrollTop / 200));
     };
     mainEl.addEventListener('scroll', handleScroll);
     return () => mainEl.removeEventListener('scroll', handleScroll);
@@ -29,76 +28,88 @@ const Hero = () => {
       textAlign: 'center',
     }}>
       <style>{`
-        @keyframes bounce {
+        @keyframes hero-bounce {
           0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-12px); }
+          50% { transform: translateY(10px); }
         }
         @keyframes dot-glow {
-          0%, 100% { box-shadow: 0 0 8px #00f5d4; }
-          50% { box-shadow: 0 0 20px #00f5d4, 0 0 40px rgba(0,245,212,0.5); }
+          0%, 100% { box-shadow: 0 0 8px var(--color-accent); }
+          50% { box-shadow: 0 0 24px var(--color-accent), 0 0 48px var(--color-accent); }
         }
       `}</style>
 
-      <p style={{
+      {/* Tag pill */}
+      <div style={{
+        display: 'inline-block',
+        padding: '0.3rem 1.2rem',
+        borderRadius: '999px',
+        border: '1px solid var(--color-accent)',
+        color: 'var(--color-accent)',
         fontFamily: 'var(--font-mono)',
-        fontSize: '0.85rem',
+        fontSize: '0.75rem',
         letterSpacing: '0.2em',
-        color: 'var(--color-cyan)',
-        marginBottom: '1rem',
         textTransform: 'uppercase',
+        marginBottom: '2rem',
+        transition: 'border-color 0.3s, color 0.3s',
       }}>
         Computer Science · Web Dev · AI
-      </p>
+      </div>
 
+      {/* Name */}
       <h1 style={{
         fontFamily: 'var(--font-display)',
-        fontSize: 'clamp(2rem, 6vw, 7rem)',
+        fontSize: 'clamp(2.5rem, 8vw, 8rem)',
         fontWeight: 800,
         color: 'white',
-        lineHeight: 1.1,
+        lineHeight: 1.05,
         textAlign: 'center',
-        padding: '0 1rem',
-        wordBreak: 'break-word',
         maxWidth: '90vw',
+        wordBreak: 'break-word',
       }}>
-        Muhammad Hassaan
+        Muhammad{' '}
+        <span style={{ color: 'var(--color-accent)', transition: 'color 0.2s linear' }}>
+          Hassaan
+        </span>
       </h1>
 
+      {/* Subtitle */}
       <p style={{
         fontFamily: 'var(--font-mono)',
-        fontSize: '1.1rem',
-        color: '#aaaaaa',
-        marginTop: '1rem',
+        fontSize: 'clamp(0.9rem, 2vw, 1.2rem)',
+        color: '#888',
+        marginTop: '1.5rem',
+        letterSpacing: '0.05em',
       }}>
         I build things that think.
       </p>
 
-      {/* Bouncing dot that fades out on scroll */}
+      {/* Scroll indicator */}
       <div style={{
         position: 'absolute',
-        bottom: '2rem',
+        bottom: '2.5rem',
         left: '50%',
         transform: 'translateX(-50%)',
         opacity: dotOpacity,
-        transition: 'opacity 0.1s linear',
+        transition: 'opacity 0.15s linear',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         gap: '0.5rem',
       }}>
-        <p style={{
+        <span style={{
           fontFamily: 'var(--font-mono)',
-          fontSize: '0.7rem',
-          color: 'rgba(0,245,212,0.6)',
-          letterSpacing: '0.15em',
-          marginBottom: '0.25rem',
-        }}>scroll</p>
+          fontSize: '0.65rem',
+          color: '#555',
+          letterSpacing: '0.3em',
+          textTransform: 'uppercase',
+        }}>scroll</span>
         <div style={{
           width: '8px',
           height: '8px',
           borderRadius: '50%',
-          background: 'var(--color-cyan)',
-          animation: 'bounce 1.5s infinite, dot-glow 1.5s infinite',
+          background: 'var(--color-accent)',
+          animation: 'hero-bounce 1.8s ease-in-out infinite, dot-glow 1.8s ease-in-out infinite',
+          transition: 'background 0.3s',
         }} />
       </div>
     </section>

@@ -1,244 +1,224 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const NeuralOrb = () => {
-  return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      width: '100%',
-      height: '100%',
-      minHeight: '400px',
-    }}>
-      <style>{`
-        .orb-wrapper {
-          position: relative;
-          width: 280px;
-          height: 280px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
+const NeuralOrb = ({ opacity }) => (
+  <div style={{
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    minHeight: '380px',
+    opacity,
+    transition: 'opacity 0.5s ease',
+  }}>
+    <style>{`
+      .orb-wrap {
+        position: relative;
+        width: 300px;
+        height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .orb-ring {
+        position: absolute;
+        border-radius: 50%;
+        border: 1.5px solid var(--color-accent);
+        transition: border-color 0.3s;
+      }
+      .orb-ring-1 {
+        width: 300px; height: 300px;
+        opacity: 0.3;
+        animation: spin1 12s linear infinite;
+      }
+      .orb-ring-2 {
+        width: 230px; height: 230px;
+        opacity: 0.5;
+        animation: spin2 8s linear infinite reverse;
+      }
+      .orb-ring-3 {
+        width: 160px; height: 160px;
+        opacity: 0.7;
+        animation: spin3 5s linear infinite;
+      }
+      .orb-ring-4 {
+        width: 100px; height: 100px;
+        opacity: 0.9;
+        animation: spin4 3s linear infinite reverse;
+      }
+      @keyframes spin1 {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      @keyframes spin2 {
+        from { transform: rotateX(55deg) rotate(0deg); }
+        to { transform: rotateX(55deg) rotate(360deg); }
+      }
+      @keyframes spin3 {
+        from { transform: rotateY(55deg) rotate(0deg); }
+        to { transform: rotateY(55deg) rotate(360deg); }
+      }
+      @keyframes spin4 {
+        from { transform: rotateX(55deg) rotateY(40deg) rotate(0deg); }
+        to { transform: rotateX(55deg) rotateY(40deg) rotate(360deg); }
+      }
+      .orb-dot {
+        position: absolute;
+        width: 7px; height: 7px;
+        border-radius: 50%;
+        background: var(--color-accent);
+        box-shadow: 0 0 10px var(--color-accent);
+        transition: background 0.3s, box-shadow 0.3s;
+      }
+      .orb-ring-1 .orb-dot { top: -3.5px; left: calc(50% - 3.5px); }
+      .orb-ring-2 .orb-dot { bottom: -3.5px; left: calc(50% - 3.5px); }
+      .orb-ring-3 .orb-dot { top: calc(50% - 3.5px); right: -3.5px; }
+      .orb-core {
+        width: 44px; height: 44px;
+        border-radius: 50%;
+        background: var(--color-accent);
+        box-shadow: 0 0 30px var(--color-accent), 0 0 80px var(--color-accent);
+        animation: core-pulse 2.5s ease-in-out infinite;
+        position: relative;
+        z-index: 10;
+        transition: background 0.3s, box-shadow 0.3s;
+      }
+      @keyframes core-pulse {
+        0%, 100% { transform: scale(1); opacity: 0.9; }
+        50% { transform: scale(1.35); opacity: 1; }
+      }
+      .orb-label {
+        position: absolute;
+        font-family: 'Space Mono', monospace;
+        font-size: 0.58rem;
+        color: var(--color-accent);
+        letter-spacing: 0.12em;
+        white-space: nowrap;
+        opacity: 0.6;
+        animation: label-float 3s ease-in-out infinite;
+        transition: color 0.3s;
+      }
+      .orb-label:nth-of-type(1) { top: -28px; left: 50%; transform: translateX(-50%); animation-delay: 0s; }
+      .orb-label:nth-of-type(2) { bottom: -28px; left: 50%; transform: translateX(-50%); animation-delay: 1s; }
+      .orb-label:nth-of-type(3) { right: -65px; top: 50%; transform: translateY(-50%); animation-delay: 2s; }
+      @keyframes label-float {
+        0%, 100% { opacity: 0.4; transform: translateX(-50%) translateY(0); }
+        50% { opacity: 0.9; transform: translateX(-50%) translateY(-4px); }
+      }
+      .orb-label:nth-of-type(3) {
+        animation-name: label-float-side;
+      }
+      @keyframes label-float-side {
+        0%, 100% { opacity: 0.4; transform: translateY(-50%) translateX(0); }
+        50% { opacity: 0.9; transform: translateY(-50%) translateX(4px); }
+      }
+    `}</style>
 
-        .orb-ring {
-          position: absolute;
-          border-radius: 50%;
-          border: 1.5px solid #00f5d4;
-          animation: orb-spin linear infinite;
-        }
-
-        .orb-ring:nth-child(1) {
-          width: 280px;
-          height: 280px;
-          border-color: rgba(0, 245, 212, 0.6);
-          animation-duration: 8s;
-          animation-direction: normal;
-        }
-
-        .orb-ring:nth-child(2) {
-          width: 220px;
-          height: 220px;
-          border-color: rgba(0, 245, 212, 0.4);
-          animation-duration: 6s;
-          animation-direction: reverse;
-          transform: rotateX(60deg);
-        }
-
-        .orb-ring:nth-child(3) {
-          width: 160px;
-          height: 160px;
-          border-color: rgba(0, 245, 212, 0.7);
-          animation-duration: 4s;
-          animation-direction: normal;
-          transform: rotateY(60deg);
-        }
-
-        .orb-ring:nth-child(4) {
-          width: 100px;
-          height: 100px;
-          border-color: rgba(0, 245, 212, 0.9);
-          animation-duration: 3s;
-          animation-direction: reverse;
-          transform: rotateX(60deg) rotateY(45deg);
-        }
-
-        @keyframes orb-spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-
-        .orb-ring:nth-child(2) {
-          animation-name: orb-spin-2;
-        }
-        @keyframes orb-spin-2 {
-          from { transform: rotateX(60deg) rotate(0deg); }
-          to { transform: rotateX(60deg) rotate(360deg); }
-        }
-
-        .orb-ring:nth-child(3) {
-          animation-name: orb-spin-3;
-        }
-        @keyframes orb-spin-3 {
-          from { transform: rotateY(60deg) rotate(0deg); }
-          to { transform: rotateY(60deg) rotate(360deg); }
-        }
-
-        .orb-ring:nth-child(4) {
-          animation-name: orb-spin-4;
-        }
-        @keyframes orb-spin-4 {
-          from { transform: rotateX(60deg) rotateY(45deg) rotate(0deg); }
-          to { transform: rotateX(60deg) rotateY(45deg) rotate(360deg); }
-        }
-
-        .orb-core {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          background: radial-gradient(circle, #00f5d4, #005a50);
-          box-shadow: 0 0 20px #00f5d4, 0 0 60px rgba(0,245,212,0.4), 0 0 100px rgba(0,245,212,0.2);
-          animation: core-pulse 2s ease-in-out infinite;
-          z-index: 10;
-        }
-
-        @keyframes core-pulse {
-          0%, 100% { transform: scale(1); box-shadow: 0 0 20px #00f5d4, 0 0 60px rgba(0,245,212,0.4); }
-          50% { transform: scale(1.3); box-shadow: 0 0 40px #00f5d4, 0 0 80px rgba(0,245,212,0.6), 0 0 120px rgba(0,245,212,0.3); }
-        }
-
-        .orb-dot {
-          position: absolute;
-          width: 6px;
-          height: 6px;
-          border-radius: 50%;
-          background: #00f5d4;
-          box-shadow: 0 0 10px #00f5d4;
-        }
-
-        .orb-ring:nth-child(1) .orb-dot {
-          top: -3px;
-          left: calc(50% - 3px);
-        }
-
-        .orb-ring:nth-child(2) .orb-dot {
-          bottom: -3px;
-          left: calc(50% - 3px);
-        }
-
-        .orb-ring:nth-child(3) .orb-dot {
-          top: calc(50% - 3px);
-          right: -3px;
-        }
-
-        .float-label {
-          position: absolute;
-          font-family: 'Space Mono', monospace;
-          font-size: 0.6rem;
-          color: rgba(0, 245, 212, 0.6);
-          letter-spacing: 0.15em;
-          white-space: nowrap;
-          animation: float-text 3s ease-in-out infinite;
-        }
-
-        .float-label:nth-of-type(1) { top: -30px; animation-delay: 0s; }
-        .float-label:nth-of-type(2) { bottom: -30px; animation-delay: 1s; }
-        .float-label:nth-of-type(3) { right: -60px; top: 50%; animation-delay: 2s; }
-
-        @keyframes float-text {
-          0%, 100% { opacity: 0.4; transform: translateY(0); }
-          50% { opacity: 1; transform: translateY(-4px); }
-        }
-      `}</style>
-
-      <div className="orb-wrapper">
-        <div className="orb-ring"><div className="orb-dot" /></div>
-        <div className="orb-ring"><div className="orb-dot" /></div>
-        <div className="orb-ring"><div className="orb-dot" /></div>
-        <div className="orb-ring"><div className="orb-dot" /></div>
-        <div className="orb-core" />
-        <span className="float-label">neural.core</span>
-        <span className="float-label">v2.0.4</span>
-        <span className="float-label">active</span>
-      </div>
+    <div className="orb-wrap">
+      <div className="orb-ring orb-ring-1"><div className="orb-dot" /></div>
+      <div className="orb-ring orb-ring-2"><div className="orb-dot" /></div>
+      <div className="orb-ring orb-ring-3"><div className="orb-dot" /></div>
+      <div className="orb-ring orb-ring-4" />
+      <div className="orb-core" />
+      <span className="orb-label">neural.core</span>
+      <span className="orb-label">online</span>
+      <span className="orb-label">v2.0</span>
     </div>
-  );
-};
+  </div>
+);
 
 const About = () => {
-  const skills = ["React", "Node.js", "Python", "Three.js", "TensorFlow"];
+  const [orbOpacity, setOrbOpacity] = useState(0);
+  const skills = ['React', 'Node.js', 'Python', 'Three.js', 'TensorFlow', 'MongoDB'];
+
+  useEffect(() => {
+    const mainEl = document.querySelector('main');
+    if (!mainEl) return;
+    const handleScroll = () => {
+      const s = mainEl.scrollTop;
+      setOrbOpacity(Math.min(1, Math.max(0, (s - 150) / 200)));
+    };
+    mainEl.addEventListener('scroll', handleScroll);
+    return () => mainEl.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <section
-      style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        padding: '4rem 2rem',
-        background: 'transparent',
-      }}
-    >
+    <section style={{
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      padding: '5rem 2rem',
+      background: 'transparent',
+    }}>
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-        gap: '3rem',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+        gap: '4rem',
         width: '100%',
-        maxWidth: '1200px',
+        maxWidth: '1100px',
         margin: '0 auto',
       }}>
-        {/* Left: Text */}
-        <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '1.5rem' }}>
-          <h2 style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-            fontWeight: 800,
-            color: 'white',
-            lineHeight: 1.1,
-          }}>
-            About Me
-          </h2>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <p style={{ fontFamily: 'var(--font-mono)', color: '#aaaaaa', fontSize: '0.95rem', lineHeight: 1.8 }}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </p>
-            <p style={{ fontFamily: 'var(--font-mono)', color: '#aaaaaa', fontSize: '0.95rem', lineHeight: 1.8 }}>
-              Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-            </p>
-            <p style={{ fontFamily: 'var(--font-mono)', color: '#aaaaaa', fontSize: '0.95rem', lineHeight: 1.8 }}>
-              Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.
-            </p>
+        {/* Left: text */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.8rem', justifyContent: 'center' }}>
+          <div>
+            <h2 style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+              fontWeight: 800,
+              color: 'white',
+              lineHeight: 1.1,
+              marginBottom: '0.75rem',
+            }}>About Me</h2>
+            <div style={{
+              width: '60px', height: '3px',
+              background: 'var(--color-accent)',
+              transition: 'background 0.3s',
+              borderRadius: '2px',
+            }} />
           </div>
 
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', paddingTop: '0.5rem' }}>
-            {skills.map((skill) => (
-              <span key={skill} style={{
-                padding: '0.4rem 1rem',
-                border: '1px solid #00f5d4',
-                color: '#00f5d4',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.8rem',
-                borderRadius: '999px',
-                background: 'rgba(0,245,212,0.05)',
-                cursor: 'default',
-                transition: 'all 0.3s',
-              }}
-              onMouseEnter={e => {
-                e.target.style.background = '#00f5d4';
-                e.target.style.color = '#000';
-              }}
-              onMouseLeave={e => {
-                e.target.style.background = 'rgba(0,245,212,0.05)';
-                e.target.style.color = '#00f5d4';
-              }}
-              >
-                {skill}
-              </span>
+          {[
+            'I am a Computer Science student specializing in Web Development and AI — building systems that are both functional and intelligent.',
+            'My work sits at the intersection of clean frontend engineering and machine learning, turning complex ideas into seamless experiences.',
+            'From neural networks to interactive 3D interfaces, I bring curiosity and precision to everything I build.',
+          ].map((text, i) => (
+            <p key={i} style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.92rem',
+              color: '#999',
+              lineHeight: 1.9,
+            }}>{text}</p>
+          ))}
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
+            {skills.map(skill => (
+              <span
+                key={skill}
+                style={{
+                  padding: '0.35rem 0.9rem',
+                  border: '1px solid var(--color-accent)',
+                  color: 'var(--color-accent)',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.78rem',
+                  borderRadius: '999px',
+                  background: 'transparent',
+                  cursor: 'default',
+                  transition: 'all 0.25s',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = 'var(--color-accent)';
+                  e.currentTarget.style.color = '#000';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.color = 'var(--color-accent)';
+                }}
+              >{skill}</span>
             ))}
           </div>
         </div>
 
-        {/* Right: Neural Orb */}
-        <NeuralOrb />
+        {/* Right: orb */}
+        <NeuralOrb opacity={orbOpacity} />
       </div>
     </section>
   );
