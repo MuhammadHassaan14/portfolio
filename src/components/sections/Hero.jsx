@@ -24,7 +24,7 @@ const Hero = () => {
       justifyContent: 'center',
       position: 'relative',
       background: 'transparent',
-      padding: '0 1rem',
+      padding: '0 1.5rem',
       textAlign: 'center',
       boxSizing: 'border-box',
       overflow: 'hidden',
@@ -41,6 +41,7 @@ const Hero = () => {
         }
       `}</style>
  
+      {/* Tag pill */}
       <div style={{
         display: 'inline-flex',
         justifyContent: 'center',
@@ -60,35 +61,40 @@ const Hero = () => {
         CS · Web Dev · AI
       </div>
  
+      {/* Name — forced two clean lines, no mid-word breaks */}
       <h1 style={{
         fontFamily: 'var(--font-display)',
-        fontSize: 'clamp(2.2rem, 9vw, 8rem)',
+        fontSize: 'clamp(1.6rem, 8.5vw, 8rem)',
         fontWeight: 800,
         color: 'white',
-        lineHeight: 1.05,
+        lineHeight: 1.1,
         textAlign: 'center',
-        width: '100%',
-        maxWidth: '95vw',
-        overflowWrap: 'break-word',
+        maxWidth: '88vw',
         margin: '0 auto',
+        wordBreak: 'keep-all',
+        overflowWrap: 'normal',
+        hyphens: 'none',
+        whiteSpace: 'normal',
       }}>
-        Muhammad{' '}
+        Muhammad<br />
         <span style={{ color: 'var(--color-accent)', transition: 'color 0.2s linear' }}>
           Hassaan
         </span>
       </h1>
  
+      {/* Subtitle */}
       <p style={{
         fontFamily: 'var(--font-mono)',
-        fontSize: 'clamp(0.75rem, 2.5vw, 1.1rem)',
+        fontSize: 'clamp(0.72rem, 2.5vw, 1.1rem)',
         color: '#888',
         marginTop: '1.2rem',
         letterSpacing: '0.03em',
-        maxWidth: '90vw',
+        maxWidth: '85vw',
       }}>
         I build things that think.
       </p>
  
+      {/* Scroll indicator */}
       <div style={{
         position: 'absolute',
         bottom: '2rem',
