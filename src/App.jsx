@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import SceneManager from './components/canvas/SceneManager';
 import Hero from './components/sections/Hero';
+import About from './components/sections/About';
 
 function App() {
   return (
@@ -16,11 +17,11 @@ function App() {
         zIndex: 0
       }}>
         <Canvas
-          camera={{ position: [0, 2, 8], fov: 60 }}
+          camera={{ position: [0, 2, 12], fov: 75 }}
           gl={{ antialias: true }}
         >
           <Suspense fallback={null}>
-            <SceneManager scrollProgress={0} />
+            <SceneManager />
           </Suspense>
         </Canvas>
       </div>
@@ -31,14 +32,15 @@ function App() {
         zIndex: 10,
         width: "100%",
         height: "100vh",
-        overflowY: "auto",
+        overflowY: "scroll",
         pointerEvents: "none"
       }}>
         <div style={{ pointerEvents: "auto" }}>
           <Hero />
+          <About />
 
-          {/* Spacer to allow scrolling if needed */}
-          <div style={{ height: "100vh" }} />
+          {/* Spacer to allow scrolling */}
+          <div style={{ height: "50vh" }} />
         </div>
       </main>
     </div>
