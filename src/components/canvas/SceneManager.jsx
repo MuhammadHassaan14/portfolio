@@ -1,7 +1,9 @@
 import React, { useRef } from 'react';
-import { Stars, Grid } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
+import { Stars, Grid } from '@react-three/drei';
 import * as THREE from 'three';
+import HelixBeam from './HelixBeam';
+import projects from '../../data/projects';
  
 const DynamicGrid = ({ accentRgb }) => {
   const gridRef = useRef();
@@ -12,12 +14,9 @@ const DynamicGrid = ({ accentRgb }) => {
     if (!gridRef.current) return;
     targetColor.current.setRGB(...accentRgb);
     currentColor.current.lerp(targetColor.current, 0.04);
- 
     const mat = gridRef.current.material;
     if (mat && mat.uniforms) {
-      if (mat.uniforms.sectionColor) {
-        mat.uniforms.sectionColor.value.copy(currentColor.current);
-      }
+      if (mat.uniforms.sectionColor) mat.uniforms.sectionColor.value.copy(currentColor.current);
       if (mat.uniforms.cellColor) {
         const dimColor = currentColor.current.clone().multiplyScalar(0.3);
         mat.uniforms.cellColor.value.copy(dimColor);
@@ -42,21 +41,14 @@ const DynamicGrid = ({ accentRgb }) => {
   );
 };
  
-const SceneManager = ({ accentRgb = [0.48, 0.38, 1.0] }) => {
+const SceneManager = ({ accentRgb = [0.48, 0.38, 1.0], scrollProgress = 0 }) => {
   return (
     <>
       <ambientLight intensity={0.4} />
       <pointLight position={[10, 10, 10]} intensity={1.5} color="#ffffff" />
-      <Stars
-        radius={100}
-        depth={50}
-        count={6000}
-        factor={4}
-        saturation={0}
-        fade
-        speed={0.5}
-      />
+      <Stars radius={100} depth={50} count={6000} factor={4} saturation={0} fade speed={0.5} />
       <DynamicGrid accentRgb={accentRgb} />
+      <HelixBeam scrollProgress={scrollProgress} projects={projects} />
     </>
   );
 };
