@@ -60,7 +60,7 @@ function App() {
         <div style={{ pointerEvents: 'auto' }}>
           <Hero />
           <About />
-          <Projects />
+          <Projects scrollProgress={scrollProgress} />
           <div style={{ height: '100vh' }} />
         </div>
       </main>
