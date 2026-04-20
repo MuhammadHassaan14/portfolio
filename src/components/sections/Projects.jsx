@@ -2,7 +2,7 @@ import React from 'react';
 import projects from '../../data/projects';
  
 var cardTimes = [
-  { fadeInStart: 0.58, fadeInEnd: 0.61, fadeOutStart: 0.68, fadeOutEnd: 0.72 },
+  { fadeInStart: 0.56, fadeInEnd: 0.61, fadeOutStart: 0.68, fadeOutEnd: 0.72 },
   { fadeInStart: 0.67, fadeInEnd: 0.70, fadeOutStart: 0.76, fadeOutEnd: 0.80 },
   { fadeInStart: 0.76, fadeInEnd: 0.79, fadeOutStart: 0.84, fadeOutEnd: 0.88 },
   { fadeInStart: 0.85, fadeInEnd: 0.88, fadeOutStart: 0.97, fadeOutEnd: 1.00 },
