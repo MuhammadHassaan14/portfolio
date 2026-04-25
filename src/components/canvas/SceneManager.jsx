@@ -5,20 +5,53 @@ import * as THREE from 'three';
 import VerticalLine from './VerticalLine';
 import projects from '../../data/projects';
  
-const DynamicGrid = ({ accentRgb, scrollProgress }) => {
-  const gridRef = useRef();
-  const currentColor = useRef(new THREE.Color(...accentRgb));
-  const targetColor = useRef(new THREE.Color(...accentRgb));
-  const posY = useRef(-2);
+// Animates camera from close-up to normal position during load
+var CameraIntro = function(props) {
+  var loadProgress = props.loadProgress || 0;
+  var initialized = useRef(false);
  
-  useFrame(() => {
+  useFrame(function(state) {
+    var camera = state.camera;
+ 
+    // On first frame, snap camera to close position
+    if (!initialized.current) {
+      camera.position.set(0, 0, 4);
+      initialized.current = true;
+    }
+ 
+    // While loading: slowly pull back to final position
+    if (loadProgress < 1) {
+      camera.position.z += (12 - camera.position.z) * 0.012;
+      camera.position.y += (2 - camera.position.y) * 0.012;
+      camera.position.x += (0 - camera.position.x) * 0.02;
+    } else {
+      // Snap to exact final position once done
+      camera.position.z += (12 - camera.position.z) * 0.05;
+      camera.position.y += (2 - camera.position.y) * 0.05;
+      camera.position.x += (0 - camera.position.x) * 0.05;
+    }
+  });
+ 
+  return null;
+};
+ 
+var DynamicGrid = function(props) {
+  var accentRgb = props.accentRgb;
+  var scrollProgress = props.scrollProgress;
+ 
+  var gridRef = useRef();
+  var currentColor = useRef(new THREE.Color(accentRgb[0], accentRgb[1], accentRgb[2]));
+  var targetColor = useRef(new THREE.Color(accentRgb[0], accentRgb[1], accentRgb[2]));
+  var posY = useRef(-2);
+ 
+  useFrame(function() {
     if (!gridRef.current) return;
  
-    // Lerp color
+    // Lerp accent color
     targetColor.current.setRGB(accentRgb[0], accentRgb[1], accentRgb[2]);
     currentColor.current.lerp(targetColor.current, 0.04);
  
-    const mat = gridRef.current.material;
+    var mat = gridRef.current.material;
     if (mat && mat.uniforms) {
       if (mat.uniforms.sectionColor) {
         mat.uniforms.sectionColor.value.copy(currentColor.current);
@@ -30,11 +63,11 @@ const DynamicGrid = ({ accentRgb, scrollProgress }) => {
       }
     }
  
-    // Rise and fade between 0.44 and 0.54
-    let targetY = -2;
-    let colorScale = 1;
+    // Rise and fade as approaching projects section
+    var targetY = -2;
+    var colorScale = 1;
     if (scrollProgress > 0.44 && scrollProgress <= 0.54) {
-      const p = (scrollProgress - 0.44) / 0.10;
+      var p = (scrollProgress - 0.44) / 0.10;
       targetY = THREE.MathUtils.lerp(-2, 6, p);
       colorScale = 1 - p;
     } else if (scrollProgress > 0.54) {
@@ -45,9 +78,9 @@ const DynamicGrid = ({ accentRgb, scrollProgress }) => {
     posY.current += (targetY - posY.current) * 0.06;
     gridRef.current.position.y = posY.current;
  
-    // Fade by scaling color brightness
+    // Apply faded color
     if (mat && mat.uniforms) {
-      const o = Math.max(0, colorScale);
+      var o = Math.max(0, colorScale);
       if (mat.uniforms.sectionColor) {
         mat.uniforms.sectionColor.value.copy(
           currentColor.current.clone().multiplyScalar(o)
@@ -63,34 +96,35 @@ const DynamicGrid = ({ accentRgb, scrollProgress }) => {
  
   if (scrollProgress > 0.58) return null;
  
-  return (
-    <Grid
-      ref={gridRef}
-      position={[0, -2, 0]}
-      cellSize={1}
-      cellThickness={0.8}
-      cellColor="#1a1a2e"
-      sectionSize={5}
-      sectionThickness={1.2}
-      sectionColor="#7B61FF"
-      fadeDistance={40}
-      fadeStrength={1}
-      infiniteGrid
-    />
-  );
+  return React.createElement(Grid, {
+    ref: gridRef,
+    position: [0, -2, 0],
+    cellSize: 1,
+    cellThickness: 0.8,
+    cellColor: '#1a1a2e',
+    sectionSize: 5,
+    sectionThickness: 1.2,
+    sectionColor: '#7B61FF',
+    fadeDistance: 40,
+    fadeStrength: 1,
+    infiniteGrid: true,
+  });
 };
  
-const SceneManager = ({ accentRgb = [0.48, 0.38, 1.0], scrollProgress = 0 }) => {
-  const projectColors = projects.map(function(p) { return p.color; });
+var SceneManager = function(props) {
+  var accentRgb = props.accentRgb || [0.48, 0.38, 1.0];
+  var scrollProgress = props.scrollProgress || 0;
+  var loadProgress = props.loadProgress || 0;
  
-  return (
-    <>
-      <ambientLight intensity={0.4} />
-      <pointLight position={[10, 10, 10]} intensity={1.5} color="#ffffff" />
-      <Stars radius={100} depth={50} count={6000} factor={4} saturation={0} fade speed={0.5} />
-      <DynamicGrid accentRgb={accentRgb} scrollProgress={scrollProgress} />
-      <VerticalLine scrollProgress={scrollProgress} projectColors={projectColors} />
-    </>
+  var projectColors = projects.map(function(p) { return p.color; });
+ 
+  return React.createElement(React.Fragment, null,
+    React.createElement(CameraIntro, { loadProgress: loadProgress }),
+    React.createElement('ambientLight', { intensity: 0.4 }),
+    React.createElement('pointLight', { position: [10, 10, 10], intensity: 1.5, color: '#ffffff' }),
+    React.createElement(Stars, { radius: 100, depth: 50, count: 6000, factor: 4, saturation: 0, fade: true, speed: 0.5 }),
+    React.createElement(DynamicGrid, { accentRgb: accentRgb, scrollProgress: scrollProgress }),
+    React.createElement(VerticalLine, { scrollProgress: scrollProgress, projectColors: projectColors })
   );
 };
  
