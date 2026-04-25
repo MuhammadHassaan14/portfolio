@@ -4,6 +4,7 @@ import SceneManager from './components/canvas/SceneManager';
 import Hero from './components/sections/Hero';
 import About from './components/sections/About';
 import Projects from './components/sections/Projects';
+import Contact from './components/sections/Contact';
  
 var hexToRgb = function(hex) {
   var clean = hex.trim().replace('#', '');
@@ -32,7 +33,6 @@ function App() {
  
   var startTimeRef = useRef(Date.now());
  
-  // Load progress animation over 2500ms
   useEffect(function() {
     var timer = setInterval(function() {
       var elapsed = Date.now() - startTimeRef.current;
@@ -46,7 +46,6 @@ function App() {
     return function() { clearInterval(timer); };
   }, []);
  
-  // Accent color polling
   useEffect(function() {
     var interval = setInterval(function() {
       var color = getComputedStyle(document.documentElement)
@@ -56,7 +55,6 @@ function App() {
     return function() { clearInterval(interval); };
   }, [accentHex]);
  
-  // Scroll tracking
   useEffect(function() {
     var mainEl = document.querySelector('main');
     if (!mainEl) return;
@@ -74,17 +72,15 @@ function App() {
   return React.createElement('div', {
     style: { position: 'relative', width: '100%', backgroundColor: '#050a0e' }
   },
-    // Blink animation style
     React.createElement('style', null,
       '@keyframes blink { 0%,100%{ opacity:0.2; } 50%{ opacity:1; } }'
     ),
  
-    // Loading indicator — bottom right, fades out when ready
+    // Loading indicator
     React.createElement('div', {
       style: {
         position: 'fixed',
-        bottom: '2rem',
-        right: '2rem',
+        bottom: '2rem', right: '2rem',
         zIndex: 100,
         fontFamily: 'Space Mono, monospace',
         fontSize: '11px',
@@ -99,12 +95,10 @@ function App() {
       }
     },
       'INITIALIZING',
-      React.createElement('span', {
-        style: { animation: 'blink 0.8s infinite' }
-      }, '_')
+      React.createElement('span', { style: { animation: 'blink 0.8s infinite' } }, '_')
     ),
  
-    // Fixed 3D canvas background
+    // Fixed 3D canvas
     React.createElement('div', {
       style: { position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }
     },
@@ -122,7 +116,7 @@ function App() {
       )
     ),
  
-    // Scrollable HTML overlay — fades in when ready
+    // Scrollable overlay — no extra spacer, stops at Contact end
     React.createElement('main', {
       style: {
         position: 'relative',
@@ -139,7 +133,8 @@ function App() {
         React.createElement(Hero),
         React.createElement(About),
         React.createElement(Projects, { scrollProgress: scrollProgress }),
-        React.createElement('div', { style: { height: '100vh' } })
+        React.createElement(Contact)
+        // No spacer div — scroll ends at bottom of Contact
       )
     )
   );
