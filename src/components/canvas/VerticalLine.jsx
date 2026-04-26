@@ -7,7 +7,7 @@ const VerticalLine = function(props) {
   var projectColors = props.projectColors || [];
  
   var nodeY = [4, -2, -8, -14];
-  var nodeStarts = [0.58, 0.66, 0.74, 0.82];
+  var nodeStarts = [0.57, 0.69, 0.81, 0.91];
  
   useFrame(function(state) {
     var camera = state.camera;
