@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-
+import githubIcon from "../../assets/github-icon.png";
+import linkedinIcon from "../../assets/linkedin.png";
   var Contact = function() {
     var [name, setName] = useState('');
     var [company, setCompany] = useState('');
@@ -113,7 +114,7 @@ import React, { useState, useEffect, useRef } from 'react';
               willChange: 'transform',
               animation: "contact-marquee 18s linear infinite"
             }}>
-              {[0, 1, 2, 3, 4, 5, 6, 7].map(function(i) {
+                {[0, 1, 2, 3].map(function(i) {
                 return (
                   <span key={i} style={{
                     fontFamily: "Space Mono, monospace",
@@ -122,11 +123,11 @@ import React, { useState, useEffect, useRef } from 'react';
                     color: "rgba(255,255,255,0.3)",
                     marginRight: "2rem"
                   }}>
-                    AVAILABLE FOR WORK — SAY HELLO — GO AHEAD — 
+                      AVAILABLE FOR WORK — GO AHEAD — FEEL FREE TO APPROACH — AVAILABLE FOR WORK — FEEL FREE TO APPROACH — GO AHEAD —
                   </span>
                 );
               })}
-            </div>
+              </div>
           </div>
 
           <div style={{
@@ -242,12 +243,17 @@ import React, { useState, useEffect, useRef } from 'react';
                   }}
                 >
                   <defs>
+                    {/* Fixed the 70,79 typo to 70,70 for a perfect circle */}
                     <path id="circlePath" d="M 90,90 m -70,0 a 70,70 0 1,1 140,0 a 70,70 0 1,1 -140,0" />
                   </defs>
-                  <text style={{ fontFamily: "Space Mono, monospace", fontSize: "10.5px", fill: "rgba(255,255,255,0.4)", letterSpacing: "3.2px"
+                  <text style={{ 
+                    fontFamily: "Space Mono, monospace", 
+                    fontSize: "10px", 
+                    fill: "rgba(255,255,255,0.4)", 
+                    letterSpacing: "7px" 
   }}>
-                    <textPath href="#circlePath">
-                      AVAILABLE FOR WORK — SAY HELLO — AVAILABLE FOR WORK — SAY HELLO — 
+                    <textPath href="#circlePath" startOffset="0%">
+                      LET'S WORK TOGETHER • SAY HELLO • LET'S WORK TOGETHER • SAY HELLO • 
                     </textPath>
                   </text>
                 </svg>
@@ -274,7 +280,7 @@ import React, { useState, useEffect, useRef } from 'react';
                     zIndex: 10
                   }}
                 >
-                  <span style={{ fontSize: "1.6rem" }}>→</span>
+                  <span style={{ fontSize: "1.6rem" }}>{isMobile ? "↑" : "←"}</span>
                 </div>
               </div>
             </div>
@@ -315,7 +321,12 @@ import React, { useState, useEffect, useRef } from 'react';
             onMouseEnter={function(e) { e.currentTarget.style.color = "var(--color-accent)"; }}
             onMouseLeave={function(e) { e.currentTarget.style.color = "rgba(255,255,255,0.4)"; }}
             >
-              GH <span style={{ fontSize: "0.6rem", opacity: 0.6 }}>↗</span>
+              <img 
+                src={githubIcon} 
+                alt="GitHub" 
+                style={{ width: "20px", height: "20px", objectFit: "contain" }} 
+              />
+              <span style={{ fontSize: "0.6rem", opacity: 0.6 }}>↗</span>
             </a>
             <a href="#" style={{
               display: "inline-flex",
@@ -331,7 +342,12 @@ import React, { useState, useEffect, useRef } from 'react';
             onMouseEnter={function(e) { e.currentTarget.style.color = "var(--color-accent)"; }}
             onMouseLeave={function(e) { e.currentTarget.style.color = "rgba(255,255,255,0.4)"; }}
             >
-              LI <span style={{ fontSize: "0.6rem", opacity: 0.6 }}>↗</span>
+              <img 
+                src={linkedinIcon} 
+                alt="LinkedIn" 
+                style={{ width: "20px", height: "20px", objectFit: "contain" }} 
+              />
+              <span style={{ fontSize: "0.6rem", opacity: 0.6 }}>↗</span>
             </a>
           </div>
         </div>
