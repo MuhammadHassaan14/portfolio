@@ -74,7 +74,7 @@ import React, { useState, useEffect, useRef } from 'react';
         minheight: "100vh",
         width: "100%",
         padding: "clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem)",
-        paddingBottom: "1rem",
+        paddingBottom: "2rem",
         background: "transparent",
         boxSizing: "border-box",
         display: "flex",
@@ -167,8 +167,12 @@ import React, { useState, useEffect, useRef } from 'react';
                 <span style={spanStyle}>I'm looking for help with</span>
                 <input 
                   className="contact-input"
-                  style={{ ...inputStyle, minWidth: "200px" }} 
-                  placeholder="a new website / AI project / web app" 
+                  style={{ 
+                    ...inputStyle, 
+                    minWidth: isMobile ? "100%" : "380px",
+                    width: isMobile ? "100%" : "auto"
+                  }} 
+                  placeholder="website, AI or web app" 
                   value={projectType}
                   onChange={function(e) { setProjectType(e.target.value); }}
                 />

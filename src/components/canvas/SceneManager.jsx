@@ -2,8 +2,6 @@ import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Stars, Grid } from '@react-three/drei';
 import * as THREE from 'three';
-import VerticalLine from './VerticalLine';
-import projects from '../../data/projects';
  
 // Animates camera from close-up to normal position during load
 var CameraIntro = function(props) {
@@ -116,15 +114,12 @@ var SceneManager = function(props) {
   var scrollProgress = props.scrollProgress || 0;
   var loadProgress = props.loadProgress || 0;
  
-  var projectColors = projects.map(function(p) { return p.color; });
- 
   return React.createElement(React.Fragment, null,
     React.createElement(CameraIntro, { loadProgress: loadProgress }),
     React.createElement('ambientLight', { intensity: 0.4 }),
     React.createElement('pointLight', { position: [10, 10, 10], intensity: 1.5, color: '#ffffff' }),
     React.createElement(Stars, { radius: 100, depth: 50, count: 6000, factor: 4, saturation: 0, fade: true, speed: 0.5 }),
-    React.createElement(DynamicGrid, { accentRgb: accentRgb, scrollProgress: scrollProgress }),
-    React.createElement(VerticalLine, { scrollProgress: scrollProgress, projectColors: projectColors })
+    React.createElement(DynamicGrid, { accentRgb: accentRgb, scrollProgress: scrollProgress })
   );
 };
  
