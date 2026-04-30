@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import githubIcon from "../../assets/github-icon.png";
-import linkedinIcon from "../../assets/linkedin.png";
+  import githubIcon from "../../assets/github-icon.png";
+  import linkedinIcon from "../../assets/linkedin.png";
+
   var Contact = function() {
     var [name, setName] = useState('');
     var [company, setCompany] = useState('');
@@ -13,7 +14,9 @@ import linkedinIcon from "../../assets/linkedin.png";
     var [badgeTiltX, setBadgeTiltX] = useState(0);
     var [badgeTiltY, setBadgeTiltY] = useState(0);
     var [centerHovered, setCenterHovered] = useState(false);
+
     var badgeRef = useRef(null);
+    var nameInputRef = useRef(null);
 
     useEffect(function() {
       var checkMobile = function() { setIsMobile(window.innerWidth < 768); };
@@ -68,10 +71,10 @@ import linkedinIcon from "../../assets/linkedin.png";
 
     return (
       <section id="contact" style={{
-        minHeight: "100vh",
+        minheight: "100vh",
         width: "100%",
         padding: "clamp(3rem, 8vw, 6rem) clamp(1.5rem, 5vw, 4rem)",
-        paddingBottom: "10rem",
+        paddingBottom: "1rem",
         background: "transparent",
         boxSizing: "border-box",
         display: "flex",
@@ -141,6 +144,7 @@ import linkedinIcon from "../../assets/linkedin.png";
               <div style={sentenceWrapper}>
                 <span style={spanStyle}>Hey! My name is</span>
                 <input 
+                  ref={nameInputRef}
                   className="contact-input"
                   style={inputStyle} 
                   placeholder="your name" 
@@ -243,7 +247,6 @@ import linkedinIcon from "../../assets/linkedin.png";
                   }}
                 >
                   <defs>
-                    {/* Fixed the 70,79 typo to 70,70 for a perfect circle */}
                     <path id="circlePath" d="M 90,90 m -70,0 a 70,70 0 1,1 140,0 a 70,70 0 1,1 -140,0" />
                   </defs>
                   <text style={{ 
@@ -251,7 +254,7 @@ import linkedinIcon from "../../assets/linkedin.png";
                     fontSize: "10px", 
                     fill: "rgba(255,255,255,0.4)", 
                     letterSpacing: "7px" 
-  }}>
+                  }}>
                     <textPath href="#circlePath" startOffset="0%">
                       LET'S WORK TOGETHER • SAY HELLO • LET'S WORK TOGETHER • SAY HELLO • 
                     </textPath>
@@ -261,6 +264,12 @@ import linkedinIcon from "../../assets/linkedin.png";
                 <div 
                   onMouseEnter={function() { setBadgeHovered(false); setCenterHovered(true); setBadgeTiltX(0); setBadgeTiltY(0); }}
                   onMouseLeave={function() { setCenterHovered(false); }}
+                  onClick={function() { 
+                    if (nameInputRef.current) { 
+                      nameInputRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      nameInputRef.current.focus(); 
+                    } 
+                  }}
                   style={{
                     position: "absolute",
                     top: "50%",
@@ -354,5 +363,4 @@ import linkedinIcon from "../../assets/linkedin.png";
       </section>
     );
   };
-
   export default Contact;
