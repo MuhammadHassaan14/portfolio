@@ -8,6 +8,7 @@ import React, { useState, useEffect, useRef } from 'react';
     var [projectType, setProjectType] = useState('');
     var [email, setEmail] = useState('');
     var [isMobile, setIsMobile] = useState(false);
+    var [status, setStatus] = useState('idle'); // 'idle', 'submitting', 'success', 'error'
 
     // Badge interaction states
     var [badgeHovered, setBadgeHovered] = useState(false);
@@ -24,6 +25,43 @@ import React, { useState, useEffect, useRef } from 'react';
       window.addEventListener('resize', checkMobile);
       return function() { window.removeEventListener('resize', checkMobile); };
     }, []);
+
+    var handleSubmit = async function() {
+      if (status === 'submitting') return;
+      
+      setStatus('submitting');
+      
+      try {
+        var response = await fetch("https://formspree.io/f/xpqbzngz", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({
+            name: name,
+            company: company,
+            project: projectType,
+            email: email
+          })
+        });
+
+        if (response.ok) {
+          setStatus('success');
+          setName('');
+          setCompany('');
+          setProjectType('');
+          setEmail('');
+          setTimeout(function() { setStatus('idle'); }, 5000);
+        } else {
+          setStatus('error');
+          setTimeout(function() { setStatus('idle'); }, 5000);
+        }
+      } catch {
+        setStatus('error');
+        setTimeout(function() { setStatus('idle'); }, 5000);
+      }
+    };
 
     var handleBadgeMove = function(e) {
       if (centerHovered || !badgeRef.current) return;
@@ -192,34 +230,43 @@ import React, { useState, useEffect, useRef } from 'react';
               </div>
 
               <button 
-                onClick={function() { console.log({ name: name, company: company, projectType: projectType, email: email }); }}
+                onClick={handleSubmit}
+                disabled={status === 'submitting'}
                 style={{
                   marginTop: "2.5rem",
                   padding: "0.8rem 2.2rem",
                   border: "1px solid var(--color-accent)",
-                  background: "transparent",
-                  color: "var(--color-accent)",
+                  background: status === 'success' ? "#22c55e" : (status === 'error' ? "#ef4444" : "transparent"),
+                  color: (status === 'success' || status === 'error') ? "#fff" : "var(--color-accent)",
                   fontFamily: "Space Mono, monospace",
                   fontSize: "0.75rem",
                   letterSpacing: "0.3em",
                   textTransform: "uppercase",
-                  cursor: "pointer",
+                  cursor: status === 'submitting' ? "not-allowed" : "pointer",
                   display: "inline-flex",
                   alignItems: "center",
                   gap: "0.6rem",
                   borderRadius: "3px",
-                  transition: "all 0.25s"
+                  transition: "all 0.25s",
+                  opacity: status === 'submitting' ? 0.7 : 1
                 }}
                 onMouseEnter={function(e) {
-                  e.currentTarget.style.background = "var(--color-accent)";
-                  e.currentTarget.style.color = "#000";
+                  if (status === 'idle') {
+                    e.currentTarget.style.background = "var(--color-accent)";
+                    e.currentTarget.style.color = "#000";
+                  }
                 }}
                 onMouseLeave={function(e) {
-                  e.currentTarget.style.background = "transparent";
-                  e.currentTarget.style.color = "var(--color-accent)";
+                  if (status === 'idle') {
+                    e.currentTarget.style.background = "transparent";
+                    e.currentTarget.style.color = "var(--color-accent)";
+                  }
                 }}
               >
-                SEND MESSAGE <span>↑</span>
+                {status === 'submitting' ? 'SENDING...' : 
+                 status === 'success' ? 'SENT SUCCESSFULLY' : 
+                 status === 'error' ? 'ERROR SENDING' : 'SEND MESSAGE'}
+                <span>{status === 'success' ? '✓' : '↑'}</span>
               </button>
             </div>
 
@@ -316,11 +363,11 @@ import React, { useState, useEffect, useRef } from 'react';
             color: "rgba(255,255,255,0.25)",
             letterSpacing: "0.1em"
           }}>
-            © 2025 Muhammad Hassaan
+            © 2026 Muhammad Hassaan
           </div>
 
           <div style={{ display: "flex", gap: "2.5rem" }}>
-            <a href="#" style={{
+            <a href="https://github.com/MuhammadHassaan14" target="_blank" rel="noopener noreferrer" style={{
               display: "inline-flex",
               alignItems: "center",
               gap: "0.5rem",
@@ -341,7 +388,7 @@ import React, { useState, useEffect, useRef } from 'react';
               />
               <span style={{ fontSize: "0.6rem", opacity: 0.6 }}>↗</span>
             </a>
-            <a href="#" style={{
+            <a href="https://www.linkedin.com/in/muhammad-hassaan-4827222aa/" target="_blank" rel="noopener noreferrer" style={{
               display: "inline-flex",
               alignItems: "center",
               gap: "0.5rem",
