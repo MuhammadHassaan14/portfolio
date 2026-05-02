@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import projects from '../../data/projects';
+import GridScanner from '../ui/GridScanner';
 
 var cardTimes = [
   { fadeInStart: 0.52, fadeInEnd: 0.56, fadeOutStart: 0.62, fadeOutEnd: 0.66 },
@@ -182,6 +183,8 @@ var Projects = function(props) {
     '@keyframes arrow-pulse-left{0%,100%{transform:translateX(0)}50%{transform:translateX(-6px)}}'
   );
 
+  var scannerOpacity = Math.max(0, Math.min(1, (0.6 - scrollProgress) * 10));
+
   return React.createElement('section', {
     id: 'projects-section',
     style: { height: '800vh', position: 'relative', background: 'transparent' }
@@ -190,6 +193,7 @@ var Projects = function(props) {
       style: { position: 'sticky', top: 0, height: '100vh', overflow: 'hidden', width: '100%' }
     },
       animStyles,
+      React.createElement(GridScanner, { opacity: scannerOpacity }),
       React.createElement('div', { style: { position: 'absolute', top: '2rem', left: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', letterSpacing: '0.3em', color: 'var(--color-accent)', textTransform: 'uppercase', zIndex: 10 } }, 'Projects'),
       React.createElement('div', { style: { position: 'absolute', bottom: '2rem', left: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--color-accent)', zIndex: 10, letterSpacing: '0.1em' } }, counterText),
       cards
