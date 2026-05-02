@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import projects from '../../data/projects';
+import ParticleMesh from '../ui/ParticleMesh';
 
 var cardTimes = [
   { fadeInStart: 0.52, fadeInEnd: 0.56, fadeOutStart: 0.62, fadeOutEnd: 0.66 },
@@ -190,6 +191,22 @@ var Projects = function(props) {
       style: { position: 'sticky', top: 0, height: '100vh', overflow: 'hidden', width: '100%' }
     },
       animStyles,
+      // Interactive Particle Mesh - Empty Horizon Effect
+      React.createElement('div', {
+        style: {
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 1,
+          opacity: Math.max(0, Math.min(1, (0.6 - scrollProgress) * 10)), // Fades out as we scroll deep into projects
+          pointerEvents: scrollProgress < 0.6 ? 'auto' : 'none',
+          transition: 'opacity 0.5s ease',
+        }
+      },
+        React.createElement(ParticleMesh)
+      ),
       React.createElement('div', { style: { position: 'absolute', top: '2rem', left: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', letterSpacing: '0.3em', color: 'var(--color-accent)', textTransform: 'uppercase', zIndex: 10 } }, 'Projects'),
       React.createElement('div', { style: { position: 'absolute', bottom: '2rem', left: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--color-accent)', zIndex: 10, letterSpacing: '0.1em' } }, counterText),
       cards
