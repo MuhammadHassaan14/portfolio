@@ -197,7 +197,7 @@ var Projects = function(props) {
           position: 'absolute',
           inset: 0,
           zIndex: 0,
-          opacity: scrollProgress > 0.95 ? 0 : 1,
+          opacity: scrollProgress > 0.8 ? Math.max(0, 1 - (scrollProgress - 0.8) * 5) : 1,
           pointerEvents: 'none'
         }
       }, 
