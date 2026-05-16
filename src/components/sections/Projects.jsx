@@ -213,6 +213,7 @@ var Projects = function(props) {
     var accentColor = cat === 'AI/ML' ? '#a78bfa' : '#fbbf24';
     return React.createElement('button', {
       key: cat,
+      className: 'proj-btn',
       onClick: function() { switchTo(cat); },
       style: {
         fontFamily: 'var(--font-mono)',
@@ -251,51 +252,23 @@ var Projects = function(props) {
   };
 
   // ─── Tab bar ───────────────────────────────────────────────────
-  var tabBar = React.createElement('div', {
-    style: {
-      position: 'absolute',
-      top: '2rem',
-      left: '50%',
-      transform: 'translateX(-50%)',
-      display: 'flex',
-      gap: '8px',
-      zIndex: 15,
-      alignItems: 'center',
-      opacity: scrollProgress > 0.48 && scrollProgress < 0.98 ? 1 : 0,
-      transition: 'opacity 0.4s ease',
-      pointerEvents: scrollProgress > 0.48 && scrollProgress < 0.98 ? 'auto' : 'none',
-    }
-  },
-    // Decorative left line
-    React.createElement('div', {
-      style: {
-        width: '30px', height: '1px',
-        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15))',
-      }
-    }),
-    makeTab('AI / ML', 'AI/ML'),
-    // Center separator
-    React.createElement('div', {
-      style: {
-        width: '1px', height: '16px',
-        background: 'rgba(255,255,255,0.1)',
-        margin: '0 2px',
-      }
-    }),
-    makeTab('Web Dev', 'Web Dev'),
-    // Decorative right line
-    React.createElement('div', {
-      style: {
-        width: '30px', height: '1px',
-        background: 'linear-gradient(270deg, transparent, rgba(255,255,255,0.15))',
-      }
-    })
-  );
+  // tabBar variable removed - moved into main render for responsiveness
 
   var animStyles = React.createElement('style', null,
     '@keyframes arrow-pulse-right{0%,100%{transform:translateX(0)}50%{transform:translateX(6px)}}' +
     '@keyframes arrow-pulse-left{0%,100%{transform:translateX(0)}50%{transform:translateX(-6px)}}' +
-    '@keyframes gravity-pulse{0%,100%{opacity:1;transform:translateX(-50%) scale(1)}50%{opacity:0.6;transform:translateX(-50%) scale(0.98)}}'
+    '@keyframes gravity-pulse{0%,100%{opacity:1;transform:translateX(-50%) scale(1)}50%{opacity:0.6;transform:translateX(-50%) scale(0.98)}}' +
+    // Top bar responsive layout
+    '.proj-topbar{display:flex;align-items:center;justify-content:space-between;gap:0.75rem;flex-wrap:nowrap;}' +
+    '.proj-topbar-tabs{display:flex;align-items:center;gap:8px;flex-shrink:0;}' +
+    '.proj-bottombar{display:flex;align-items:center;justify-content:space-between;gap:1rem;}' +
+    '.proj-btn{flex-shrink:0;white-space:nowrap;}' +
+    '@media(max-width:640px){' +
+      '.proj-topbar{flex-direction:column;align-items:center;justify-content:center;gap:0.6rem;top:1rem !important;}' +
+      '.proj-topbar-tabs{justify-content:center;}' +
+      '.proj-bottombar{flex-direction:column-reverse;align-items:center;bottom:1rem !important;gap:0.5rem !important;}' +
+      '.proj-btn{padding:6px 14px !important; fontSize:9px !important;}' +
+    '}'
   );
 
   return React.createElement('section', {
@@ -328,32 +301,96 @@ var Projects = function(props) {
           ? React.createElement(ShootingStarsCanvas, { hue: meteorHue })
           : null
       ),
-      // Section label (top-left)
-      React.createElement('div', { style: { position: 'absolute', top: '2rem', left: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', letterSpacing: '0.3em', color: 'var(--color-accent)', textTransform: 'uppercase', zIndex: 10 } }, 'Projects'),
-      // Tab bar (top-center)
-      tabBar,
-      // Counter (bottom-left)
-      React.createElement('div', { style: { position: 'absolute', bottom: '2rem', left: '2rem', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--color-accent)', zIndex: 10, letterSpacing: '0.1em' } }, counterText),
-      // Active category label (bottom-right)
+      // ── Responsive top bar: title + tabs in one flex row (stacks on mobile) ──
       React.createElement('div', {
+        className: 'proj-topbar',
+        style: {
+          position: 'absolute',
+          top: '1.5rem',
+          left: '1.5rem',
+          right: '1.5rem',
+          zIndex: 15,
+          opacity: scrollProgress > 0.48 && scrollProgress < 0.98 ? 1 : 0,
+          transition: 'opacity 0.4s ease',
+          pointerEvents: scrollProgress > 0.48 && scrollProgress < 0.98 ? 'auto' : 'none',
+        }
+      },
+        // Section title
+        React.createElement('div', {
+          style: {
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.7rem',
+            letterSpacing: '0.3em',
+            color: 'var(--color-accent)',
+            textTransform: 'uppercase',
+            flexShrink: 0,
+            whiteSpace: 'nowrap',
+          }
+        }, 'Projects'),
+        // Tab group
+        React.createElement('div', { className: 'proj-topbar-tabs' },
+          // Decorative left line — hidden on mobile via inline flex-shrink
+          React.createElement('div', {
+            style: {
+              width: '24px', height: '1px',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.15))',
+              flexShrink: 0,
+            }
+          }),
+          makeTab('AI / ML', 'AI/ML'),
+          React.createElement('div', {
+            style: { width: '1px', height: '14px', background: 'rgba(255,255,255,0.1)', flexShrink: 0 }
+          }),
+          makeTab('Web Dev', 'Web Dev'),
+          React.createElement('div', {
+            style: {
+              width: '24px', height: '1px',
+              background: 'linear-gradient(270deg, transparent, rgba(255,255,255,0.15))',
+              flexShrink: 0,
+            }
+          })
+        )
+      ),
+      // ── Responsive bottom bar: counter + category label ──
+      React.createElement('div', {
+        className: 'proj-bottombar',
         style: {
           position: 'absolute',
           bottom: '2rem',
+          left: '2rem',
           right: '2rem',
-          fontFamily: 'var(--font-mono)',
-          fontSize: '9px',
-          letterSpacing: '0.2em',
-          padding: '4px 14px',
-          borderRadius: '999px',
-          background: activeCategory === 'AI/ML' ? 'rgba(167,139,250,0.1)' : 'rgba(251,191,36,0.1)',
-          border: '1px solid ' + (activeCategory === 'AI/ML' ? 'rgba(167,139,250,0.25)' : 'rgba(251,191,36,0.25)'),
-          color: activeCategory === 'AI/ML' ? '#a78bfa' : '#fbbf24',
           zIndex: 10,
-          transition: 'all 0.5s ease',
-          textTransform: 'uppercase',
-          opacity: scrollProgress > 0.48 && scrollProgress < 0.98 ? 0.7 : 0,
+          opacity: scrollProgress > 0.48 && scrollProgress < 0.98 ? 1 : 0,
+          transition: 'opacity 0.4s ease',
+          pointerEvents: 'none',
         }
-      }, activeCategory === 'AI/ML' ? '◆ AI / ML' : '◆ WEB DEV'),
+      },
+        // Counter
+        React.createElement('div', { 
+          style: { 
+            fontFamily: 'var(--font-mono)', 
+            fontSize: '0.7rem', 
+            color: 'var(--color-accent)', 
+            letterSpacing: '0.1em' 
+          } 
+        }, counterText),
+        // Active category label
+        React.createElement('div', {
+          style: {
+            fontFamily: 'var(--font-mono)',
+            fontSize: '9px',
+            letterSpacing: '0.2em',
+            padding: '4px 14px',
+            borderRadius: '999px',
+            background: activeCategory === 'AI/ML' ? 'rgba(167,139,250,0.1)' : 'rgba(251,191,36,0.1)',
+            border: '1px solid ' + (activeCategory === 'AI/ML' ? 'rgba(167,139,250,0.25)' : 'rgba(251,191,36,0.25)'),
+            color: activeCategory === 'AI/ML' ? '#a78bfa' : '#fbbf24',
+            transition: 'all 0.5s ease',
+            textTransform: 'uppercase',
+            opacity: 0.7,
+          }
+        }, activeCategory === 'AI/ML' ? '◆ AI / ML' : '◆ WEB DEV')
+      ),
       // All project cards
       cards
     )
